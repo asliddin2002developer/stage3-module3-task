@@ -25,6 +25,7 @@ subprojects {
         implementation "org.hibernate:hibernate-core:$hibernateCoreVersion"
         implementation "org.postgresql:postgresql:$postgresVersion"
         implementation group: "org.springframework.boot", name: "spring-boot-starter-data-jpa", version: "$sprintBootStarterDataJpaVersion"
+        implementation group: 'javax.persistence', name: 'javax.persistence-api', version: "$javaxVersion"
 
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
 
@@ -32,7 +33,7 @@ subprojects {
         testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
         testImplementation "com.tngtech.archunit:archunit:$archUnitVersion"
         testImplementation "com.tngtech.archunit:archunit-junit5:$archUnitJunit5Version"
-        testImplementation group: 'org.assertj', name: 'assertj-core', version: '$assertjVersion'
+        testImplementation group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
 
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
