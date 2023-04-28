@@ -28,11 +28,11 @@ public class CommandDispatcher {
         commandMap.put("13", "deleteById");
         commandMap.put("14", "deleteById");
         commandMap.put("15", "deleteById");
-        commandMap.put("16", "getByParam");
-        commandMap.put("17", "getByParam");
-        commandMap.put("18", "getByParam");
+        commandMap.put("16", "getTagsByNewsId");
+        commandMap.put("17", "getAuthorByNewsId");
+        commandMap.put("18", "getNewsByParams");
     }
-    public Object dispatch(BaseController<?, ?, ?, ?> controller, String commandName, List<Object> commandParams) throws InvocationTargetException, IllegalAccessException {
+    public Object dispatch(BaseController<?, ?, ?> controller, String commandName, List<Object> commandParams) throws InvocationTargetException, IllegalAccessException {
         Method[] methods = BaseController.class.getDeclaredMethods();
 
         Method method = null;
