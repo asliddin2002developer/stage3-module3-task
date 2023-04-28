@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TagService implements BaseService<TagDtoRequest, TagDtoResponse, Long, Long> {
-    private final BaseRepository<TagModel, Long, Long> repository;
+public class TagService implements BaseService<TagDtoRequest, TagDtoResponse, Long> {
+    private final BaseRepository<TagModel, Long> repository;
     private final Validator<TagDtoRequest> ERROR_VALIDATOR;
     private final TagMapper mapper;
 
     @Autowired
-    public TagService(BaseRepository<TagModel, Long, Long> repository, TagErrorValidator ERROR_VALIDATOR) {
+    public TagService(BaseRepository<TagModel, Long> repository, TagErrorValidator ERROR_VALIDATOR) {
         this.repository = repository;
         this.ERROR_VALIDATOR = ERROR_VALIDATOR;
         this.mapper = Mappers.getMapper(TagMapper.class);
@@ -70,8 +70,8 @@ public class TagService implements BaseService<TagDtoRequest, TagDtoResponse, Lo
 
 
     @Override
-    public List<TagDtoResponse> getByParam(Long id){
-        List<TagModel> tags = repository.getByParam(id);
+    public List<TagDtoResponse> getTagsByNewsId(Long id){
+        List<TagModel> tags = repository.getTagsByNewsId(id);
         return tags.stream()
                 .map(mapper::modelToDto)
                 .collect(Collectors.toList());

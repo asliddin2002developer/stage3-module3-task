@@ -20,16 +20,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse, NewsParams, Long> {
+public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse, Long> {
 
-    private final BaseRepository<NewsModel, NewsParams, Long> repository;
-    private final BaseRepository<TagModel, Long, Long> tagRepo;
+    private final BaseRepository<NewsModel, Long> repository;
+    private final BaseRepository<TagModel, Long> tagRepo;
     private final NewsErrorValidator ERROR_VALIDATOR;
     private final NewsMapper mapper;
 
     @Autowired
-    public NewsService(BaseRepository<NewsModel, NewsParams, Long> repository,
-                       BaseRepository<TagModel, Long, Long> tagRepo,
+    public NewsService(BaseRepository<NewsModel, Long> repository,
+                       BaseRepository<TagModel, Long> tagRepo,
                        NewsErrorValidator ERROR_VALIDATOR){
         this.repository = repository;
         this.tagRepo = tagRepo;
@@ -75,13 +75,15 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
         if (ERROR_VALIDATOR.isValidParams(updateRequest)) {
             Set<Long> tagIds = updateRequest.getTagIds();
             NewsModel news = mapper.dtoToModel(updateRequest);
+            System.out.println(tagIds);
             for ( Long id : tagIds ){
                 TagModel tag = tagRepo.readById(id);
+                System.out.println(tag);
                 if (tag != null ){
                     news.addTags( tag );
                 }
             }
-            news = repository.update(mapper.dtoToModel(updateRequest));
+            news = repository.update(news);
             return mapper.modelToDto(news);
         }
         throw new RuntimeException();
@@ -96,8 +98,8 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
     }
 
     @Override
-    public List<NewsDtoResponse> getByParam(NewsParams param) {
-        List<NewsModel> newsModels = repository.getByParam(param);
+    public List<NewsDtoResponse> getNewsByParams(NewsParams params) {
+        List<NewsModel> newsModels = repository.getNewsByParams(params);
         return newsModels.stream()
                 .map(mapper::modelToDto)
                 .collect(Collectors.toList());

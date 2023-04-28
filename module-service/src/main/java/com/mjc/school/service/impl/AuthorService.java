@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthorService implements BaseService<AuthorDtoRequest, AuthorDtoResponse, Long, Long>{
-        private final BaseRepository<AuthorModel, Long, Long> repository;
+public class AuthorService implements BaseService<AuthorDtoRequest, AuthorDtoResponse, Long>{
+        private final BaseRepository<AuthorModel, Long> repository;
         private final Validator<AuthorDtoRequest> ERROR_VALIDATOR;
         private final AuthorMapper mapper;
 
         @Autowired
-        public AuthorService(BaseRepository<AuthorModel, Long, Long> repository, AuthorErrorValidator ERROR_VALIDATOR){
+        public AuthorService(BaseRepository<AuthorModel, Long> repository, AuthorErrorValidator ERROR_VALIDATOR){
             this.repository = repository;
             this.ERROR_VALIDATOR = ERROR_VALIDATOR;
             this.mapper = Mappers.getMapper(AuthorMapper.class);
@@ -72,11 +72,9 @@ public class AuthorService implements BaseService<AuthorDtoRequest, AuthorDtoRes
 
 
     @Override
-    public List<AuthorDtoResponse> getByParam(Long id) {
-        List<AuthorModel> authorModels = repository.getByParam(id);
-        return authorModels.stream()
-                .map(mapper::modelToDto)
-                .collect(Collectors.toList());
+    public AuthorDtoResponse getAuthorByNewsId(Long id) {
+        AuthorModel authorModel = repository.getAuthorByNewsId(id);
+        return mapper.modelToDto(authorModel);
 
     }
 }

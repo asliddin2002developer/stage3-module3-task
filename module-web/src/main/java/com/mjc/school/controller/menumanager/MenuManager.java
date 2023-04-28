@@ -15,18 +15,18 @@ import static com.mjc.school.controller.menumanager.Utils.*;
 
 @Component
 public class MenuManager {
-    private final BaseController<AuthorDtoRequest, AuthorDtoResponse, Long, Long> authorController;
-    private final BaseController<NewsDtoRequest, NewsDtoResponse, NewsParams, Long> newsController;
-    private final BaseController<TagDtoRequest, TagDtoResponse, Long, Long> tagController;
+    private final BaseController<AuthorDtoRequest, AuthorDtoResponse, Long> authorController;
+    private final BaseController<NewsDtoRequest, NewsDtoResponse, Long> newsController;
+    private final BaseController<TagDtoRequest, TagDtoResponse, Long> tagController;
     private final CommandDispatcher commandDispatcher;
     private final InputHandler inputHandler;
     private final Menu menu;
 
 
     @Autowired
-    public MenuManager(BaseController<AuthorDtoRequest, AuthorDtoResponse, Long, Long> authorController,
-                       BaseController<NewsDtoRequest, NewsDtoResponse, NewsParams, Long> newsController,
-                       BaseController<TagDtoRequest, TagDtoResponse, Long, Long> tagController,
+    public MenuManager(BaseController<AuthorDtoRequest, AuthorDtoResponse, Long> authorController,
+                       BaseController<NewsDtoRequest, NewsDtoResponse, Long> newsController,
+                       BaseController<TagDtoRequest, TagDtoResponse, Long> tagController,
                        CommandDispatcher commandDispatcher,
                        InputHandler inputHandler,
                        Menu menu) {
@@ -129,7 +129,7 @@ public class MenuManager {
                 case EXIT -> System.exit(0);
             }
 
-            BaseController<?, ?, ?, ?> controller = this.getRelevantController( choice ); // controller which is passed to commandDispatcher as an argument
+            BaseController<?, ?, ?> controller = this.getRelevantController( choice ); // controller which is passed to commandDispatcher as an argument
 
             try {
                 commandDispatcher.dispatch( controller, choice, commandParams );
@@ -174,7 +174,7 @@ public class MenuManager {
         return new NewsParams( authorName, title, content, tagIdsLong, tagNames );
     }
 
-    public BaseController<?, ?, ?, ?> getRelevantController( String choice ){
+    public BaseController<?, ?, ?> getRelevantController( String choice ){
         switch (choice) {
             case READ_ALL_AUTHORS, READ_AUTHOR_BY_ID, CREATE_AUTHOR, UPDATE_AUTHOR, DELETE_AUTHOR_BY_ID, FIND_AUTHORS_BY_NEWS_ID -> {
                 return authorController;

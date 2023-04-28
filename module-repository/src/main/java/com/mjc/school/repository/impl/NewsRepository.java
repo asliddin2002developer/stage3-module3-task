@@ -23,7 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @Repository
-public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Long> {
+public class NewsRepository implements BaseRepository<NewsModel, Long> {
 
     private final SessionFactory sessionFactory;
     @Autowired
@@ -35,9 +35,11 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
     @Override
     public List<NewsModel> readAll() {
         try(Session session = sessionFactory.openSession()){
-            return session.createQuery("SELECT DISTINCT  n FROM NewsModel n " +
-                                                                    "JOIN FETCH n.tags t " +
-                                                                    "JOIN FETCH n.author a ", NewsModel.class).getResultList();
+            // query for FetchType.LAZY
+            // return session.createQuery("SELECT DISTINCT  n FROM NewsModel n " +
+            //                                                   "JOIN FETCH n.tags t " +
+            //                                                   "JOIN FETCH n.author a ", NewsModel.class).getResultList();
+            return session.createQuery("FROM NewsModel").getResultList();
         }
     }
 
@@ -65,11 +67,12 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
     public NewsModel update(NewsModel entity) {
         try(Session session = sessionFactory.openSession()){
             session.beginTransaction();
-
+            System.out.println(entity.getTags());
             NewsModel response = session.get(NewsModel.class, entity.getId());
             response.setTitle(entity.getTitle());
             response.setContent(entity.getContent());
             response.setAuthor(entity.getAuthor());
+            response.setTags(entity.getTags());
 
             session.getTransaction().commit();
         }catch (Exception e){
@@ -84,18 +87,25 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
 
             NewsModel news = session.get(NewsModel.class, id);
 
-            // get all tags that news has alone
-            Query q = session.createNativeQuery("SELECT nt.tag_id FROM newstag nt JOIN tag t ON nt.tag_id = t.id JOIN newstag nt2 ON t.id = nt2.tag_id WHERE nt2.news_id = ? GROUP BY nt.tag_id HAVING COUNT(nt.news_id) = 1");
-            q.setParameter(1, news.getId());
-            List<Long> tagIds = (List<Long>) q.getResultList();
+             //   get all tags that news has alone
+             Query q = session.createNativeQuery("SELECT nt.tag_id FROM newstag nt " +
+                                                                             "JOIN tag t ON nt.tag_id = t.id " +
+                                                                             "JOIN newstag nt2 ON t.id = nt2.tag_id " +
+                                                                             "WHERE nt2.news_id = ? " +
+                                                                             "GROUP BY nt.tag_id " +
+                                                                            "HAVING COUNT(nt.news_id) = 1");
+             q.setParameter(1, news.getId());
+             List<Long> tagIds = (List<Long>) q.getResultList();
 
             // remove all associations for this news
-            q = session.createNativeQuery("DELETE FROM newstag nt WHERE nt.news_id = :id");
+            q = session.createNativeQuery("DELETE FROM newstag nt " +
+                                                            "WHERE nt.news_id = :id");
             q.setParameter("id", news.getId());
             q.executeUpdate();
 
             // remove all tags that this news has alone
-            q = session.createNativeQuery("DELETE FROM tag t WHERE t.id IN (:ids)");
+            q = session.createNativeQuery("DELETE FROM tag t " +
+                                                            "WHERE t.id IN (:ids)");
             q.setParameter("ids", tagIds);
             q.executeUpdate();
 
@@ -127,7 +137,7 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
     }
 
     @Override
-    public List<NewsModel> getByParam(NewsParams param) {
+    public List<NewsModel> getNewsByParams(NewsParams params) {
         try(Session session = sessionFactory.openSession()){
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<NewsModel> cq = cb.createQuery(NewsModel.class);
@@ -135,29 +145,29 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
             Join<NewsModel, TagModel> tagJoin = newsRoot.join("tags");
 
             Predicate authorPredicate = null;
-            if(param.getAuthorName() != null && !param.getAuthorName().isEmpty()){
+            if(params.getAuthorName() != null && !params.getAuthorName().isEmpty()){
                 Join<NewsModel, AuthorModel> authorJoin = newsRoot.join("author");
-                authorPredicate = cb.like(authorJoin.get("name"), "%" + param.getAuthorName() + "%");
+                authorPredicate = cb.like(authorJoin.get("name"), "%" + params.getAuthorName() + "%");
             }
 
             Predicate titlePredicate = null;
-            if(param.getTitle() != null && !param.getTitle().isEmpty()){
-                titlePredicate = cb.like(newsRoot.get("title"), "%" + param.getTitle() + "%");
+            if(params.getTitle() != null && !params.getTitle().isEmpty()){
+                titlePredicate = cb.like(newsRoot.get("title"), "%" + params.getTitle() + "%");
             }
 
             Predicate contentPredicate = null;
-            if(param.getContent() != null && !param.getContent().isEmpty()){
-                contentPredicate = cb.like(newsRoot.get("content"), "%" + param.getContent() + "%");
+            if(params.getContent() != null && !params.getContent().isEmpty()){
+                contentPredicate = cb.like(newsRoot.get("content"), "%" + params.getContent() + "%");
             }
 
             Predicate tagIdPredicate = null;
-            if(param.getTagIds() != null && !param.getTagIds().isEmpty()){
-                tagIdPredicate = tagJoin.get("id").in(param.getTagIds());
+            if(params.getTagIds() != null && !params.getTagIds().isEmpty()){
+                tagIdPredicate = tagJoin.get("id").in(params.getTagIds());
             }
 
             Predicate tagNamePredicate = null;
-            if(param.getTagNames() != null && !param.getTagNames().isEmpty()){
-                tagNamePredicate = tagJoin.get("name").in(param.getTagNames());
+            if(params.getTagNames() != null && !params.getTagNames().isEmpty()){
+                tagNamePredicate = tagJoin.get("name").in(params.getTagNames());
             }
 
             Predicate finalPredicate = cb.and(authorPredicate, titlePredicate, contentPredicate, tagIdPredicate, tagNamePredicate);

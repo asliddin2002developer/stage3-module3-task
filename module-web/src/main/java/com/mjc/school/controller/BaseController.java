@@ -3,10 +3,14 @@ package com.mjc.school.controller;
 import com.mjc.school.controller.annotations.CommandBody;
 import com.mjc.school.controller.annotations.CommandHandler;
 import com.mjc.school.controller.annotations.CommandParam;
+import com.mjc.school.repository.utils.NewsParams;
+import com.mjc.school.service.dto.AuthorDtoResponse;
+import com.mjc.school.service.dto.NewsDtoResponse;
+import com.mjc.school.service.dto.TagDtoResponse;
 
 import java.util.List;
 
-public interface BaseController<T, R, P, K> {
+public interface BaseController<T, R, K> {
 
     @CommandHandler
     List<R> readAll();
@@ -24,5 +28,18 @@ public interface BaseController<T, R, P, K> {
     boolean deleteById(@CommandParam("id") K id);
 
     @CommandHandler
-    List<R> getByParam(@CommandParam("param") P p);
+    default AuthorDtoResponse getAuthorByNewsId(@CommandParam("newsId") Long newsId){
+        // Default implementation that throws an UnsupportedOperationException
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+    @CommandHandler
+    default List<TagDtoResponse> getTagsByNewsId(@CommandParam("newsId") Long newsId){
+        // Default implementation that throws an UnsupportedOperationException
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+    @CommandHandler
+    default List<NewsDtoResponse> getNewsByParams(@CommandBody NewsParams params) {
+        // Default implementation that throws an UnsupportedOperationException
+        throw new UnsupportedOperationException("Method not implemented");
+    }
 }

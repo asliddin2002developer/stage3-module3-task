@@ -1,8 +1,13 @@
 package com.mjc.school.service;
 
+import com.mjc.school.repository.utils.NewsParams;
+import com.mjc.school.service.dto.AuthorDtoResponse;
+import com.mjc.school.service.dto.NewsDtoResponse;
+import com.mjc.school.service.dto.TagDtoResponse;
+
 import java.util.List;
 
-public interface BaseService<T, R, P, K> {
+public interface BaseService<T, R, K> {
     List<R> readAll();
 
     R readById(K id);
@@ -13,6 +18,17 @@ public interface BaseService<T, R, P, K> {
 
     boolean deleteById(K id);
 
-    List<R> getByParam(P p);
+    default AuthorDtoResponse getAuthorByNewsId(Long newsId){
+        // Default implementation that throws an UnsupportedOperationException
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+    default List<TagDtoResponse> getTagsByNewsId(Long newsId){
+        // Default implementation that throws an UnsupportedOperationException
+        throw new UnsupportedOperationException("Method not implemented");
+    }
+    default List<NewsDtoResponse> getNewsByParams(NewsParams params) {
+        // Default implementation that throws an UnsupportedOperationException
+        throw new UnsupportedOperationException("Method not implemented");
+    }
 
 }

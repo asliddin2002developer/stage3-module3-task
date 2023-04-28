@@ -26,11 +26,14 @@ subprojects {
         implementation "org.postgresql:postgresql:$postgresVersion"
         implementation group: "org.springframework.boot", name: "spring-boot-starter-data-jpa", version: "$sprintBootStarterDataJpaVersion"
 
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
+
         testImplementation "org.springframework:spring-test:$springVersion"
         testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
-        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
         testImplementation "com.tngtech.archunit:archunit:$archUnitVersion"
         testImplementation "com.tngtech.archunit:archunit-junit5:$archUnitJunit5Version"
+        testImplementation group: 'org.assertj', name: 'assertj-core', version: '$assertjVersion'
+
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"

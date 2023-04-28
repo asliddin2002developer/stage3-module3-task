@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @Getter
 @Setter
 @Repository
-public class AuthorRepository implements BaseRepository<AuthorModel, Long, Long> {
+public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
     private final SessionFactory sessionFactory;
     @Autowired
     public AuthorRepository(SessionFactory sessionFactory){
@@ -79,7 +79,8 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long, Long>
     public boolean deleteById(Long id) {
         try(Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            Query<NewsModel> query = session.createQuery("DELETE FROM NewsModel n WHERE n.author.id = :authorId");
+            Query<NewsModel> query = session.createQuery("DELETE FROM NewsModel n " +
+                                                                            "WHERE n.author.id = :authorId");
             query.setParameter("authorId", id);
             query.executeUpdate();
             AuthorModel authorModel = session.get(AuthorModel.class, id);
@@ -112,14 +113,14 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long, Long>
     }
 
     @Override
-    public List<AuthorModel> getByParam(Long id) {
+    public AuthorModel getAuthorByNewsId(Long id) {
         try(Session session = sessionFactory.openSession()){
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<AuthorModel> query = builder.createQuery(AuthorModel.class);
             Root<NewsModel> root = query.from(NewsModel.class);
             Join<NewsModel, AuthorModel> join = root.join("author");
             query.select(join).where(builder.equal(root.get("id"), id));
-            return session.createQuery(query).getResultList();
+            return session.createQuery(query).getSingleResult();
         }
     }
 }

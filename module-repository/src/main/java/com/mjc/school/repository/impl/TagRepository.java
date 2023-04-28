@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Repository
-public class TagRepository implements BaseRepository<TagModel, Long, Long> {
+public class TagRepository implements BaseRepository<TagModel, Long> {
 
     private final SessionFactory sessionFactory;
 
@@ -102,7 +102,7 @@ public class TagRepository implements BaseRepository<TagModel, Long, Long> {
     }
 
     @Override
-    public List<TagModel> getByParam(Long id) {
+    public List<TagModel> getTagsByNewsId(Long id) {
         try(Session session = sessionFactory.openSession()){
             CriteriaBuilder builder = session.getCriteriaBuilder();
             CriteriaQuery<TagModel> query = builder.createQuery(TagModel.class);

@@ -9,7 +9,7 @@ public enum Utils {
     ENTER_AUTHOR_ID_NEWS("Enter Author ID: "),
     ENTER_TAG_ID("Enter Tag ID: "),
     ENTER_TAG_NAME("Enter Tag name: "),
-    ENTER_TAG_IDS("Enter Tag Ids (e.g 1, 2, 3): "),
+    ENTER_TAG_IDS("Enter Tag Ids: "),
     ENTER_TAG_NAMES("Enter Tag names: ");
 
     private final String content;
