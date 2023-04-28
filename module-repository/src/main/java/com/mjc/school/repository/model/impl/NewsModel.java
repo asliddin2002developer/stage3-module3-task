@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "News")
@@ -54,12 +55,12 @@ public class NewsModel implements BaseEntity<Long> {
         this.author = author;
     }
 
-    public NewsModel(String title, String content, AuthorModel author, LocalDateTime createDate, LocalDateTime lastUpdateDate){
+    public NewsModel(String title, String content, LocalDateTime createDate, LocalDateTime lastUpdateDate, AuthorModel author){
         this.title = title;
         this.content = content;
-        this.author = author;
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
+        this.author = author;
     }
 
     public NewsModel() {

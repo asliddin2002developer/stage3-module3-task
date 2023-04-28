@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static com.mjc.school.repository.utils.Constants.*;
 
 @AnalyzeClasses(importOptions = ImportOption.DoNotIncludeTests.class)
-public class RepositoryTest {
+public class BaseRepositoryTest {
     @Test
     void Context_should_have_two_Repositories(){
         JavaClasses classes = new ClassFileImporter().importPackages(repositoryImplPackage);

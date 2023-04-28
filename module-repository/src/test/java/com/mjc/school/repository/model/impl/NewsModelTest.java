@@ -1,7 +1,5 @@
-package com.mjc.school.repository;
+package com.mjc.school.repository.model.impl;
 
-import com.mjc.school.repository.model.impl.AuthorModel;
-import com.mjc.school.repository.model.impl.NewsModel;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -9,10 +7,11 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.*;
 
-import java.time.LocalDateTime;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
-public class HibernateTest {
+public class NewsModelTest {
 
     private static SessionFactory sessionFactory;
     private Session session;
@@ -41,40 +40,40 @@ public class HibernateTest {
         }
     }
 
-
-
     @Test
-    void testNewsCreate(){
+    public void testCreateReadUpdateDelete() {
+        // Create a new NewsModel entity
+        NewsModel newsModel = new NewsModel();
+        newsModel.setTitle("Test Title");
+        newsModel.setContent("Test Content");
+
+        // Save the entity to the database
         session.beginTransaction();
-
-        AuthorModel authorModel = new AuthorModel("TestUser", LocalDateTime.now(), LocalDateTime.now());
-        Long authorId = (Long) session.save(authorModel);
-
-        NewsModel newsModel = new NewsModel("Why people cry?", "Lorem ipsum is dummy text....", authorModel, LocalDateTime.now(), LocalDateTime.now());
-        Long newsId = (Long) session.save(newsModel);
-
+        session.save(newsModel);
         session.getTransaction().commit();
 
-        Assertions.assertTrue(authorId > 0);
-        Assertions.assertTrue(newsId > 0);
+        // Retrieve the entity from the database using the generated ID
+        NewsModel retrievedNewsModel = session.get(NewsModel.class, newsModel.getId());
+        assertNotNull(retrievedNewsModel);
+
+        // Update the entity
+        retrievedNewsModel.setTitle("Updated Title");
+        retrievedNewsModel.setContent("Updated Content");
+
+        // Save the updated entity to the database
+        session.beginTransaction();
+        session.update(retrievedNewsModel);
+        session.getTransaction().commit();
+
+        // Delete the entity from the database
+        session.beginTransaction();
+        session.delete(retrievedNewsModel);
+        session.getTransaction().commit();
+
+        // Verify that the entity was deleted
+        NewsModel deletedNewsModel = session.get(NewsModel.class, newsModel.getId());
+        assertNull(deletedNewsModel);
     }
-
-    @Test
-    void testNewsList(){
-
-    }
-
-    @Test
-    void testNewsUpdate(){
-
-    }
-
-    @Test
-    void testNewsDelete(){
-
-    }
-
-
 
     @BeforeEach
     public void openSession(){

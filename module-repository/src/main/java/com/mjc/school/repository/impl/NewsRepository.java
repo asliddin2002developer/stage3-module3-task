@@ -52,9 +52,11 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
     public NewsModel create(NewsModel entity) {
         try(Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+
             AuthorModel authorModel = session.merge(entity.getAuthor());
             entity.setAuthor(authorModel);
             session.persist(entity);
+
             session.getTransaction().commit();
             return entity;
         }
@@ -63,10 +65,12 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
     public NewsModel update(NewsModel entity) {
         try(Session session = sessionFactory.openSession()){
             session.beginTransaction();
+
             NewsModel response = session.get(NewsModel.class, entity.getId());
             response.setTitle(entity.getTitle());
             response.setContent(entity.getContent());
             response.setAuthor(entity.getAuthor());
+
             session.getTransaction().commit();
         }catch (Exception e){
             e.printStackTrace();
@@ -77,6 +81,7 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
     public boolean deleteById(Long id) {
         try(Session session = sessionFactory.openSession()) {
             session.beginTransaction();
+
             NewsModel news = session.get(NewsModel.class, id);
 
             // get all tags that news has alone
@@ -95,6 +100,7 @@ public class NewsRepository implements BaseRepository<NewsModel, NewsParams, Lon
             q.executeUpdate();
 
             session.remove(news);
+
             session.getTransaction().commit();
             return true;
         }
