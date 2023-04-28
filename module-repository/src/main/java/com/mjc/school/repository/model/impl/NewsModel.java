@@ -14,7 +14,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "News")
