@@ -8,8 +8,8 @@ import com.mjc.school.repository.model.impl.NewsModel;
 
 import com.mjc.school.repository.model.impl.TagModel;
 import com.mjc.school.repository.utils.NewsParams;
-import jakarta.persistence.Query;
-import jakarta.persistence.criteria.*;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
 import lombok.*;
 
 import org.hibernate.Session;
@@ -55,7 +55,7 @@ public class NewsRepository implements BaseRepository<NewsModel, Long> {
         try(Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            AuthorModel authorModel = session.merge(entity.getAuthor());
+            AuthorModel authorModel = (AuthorModel) session.merge(entity.getAuthor());
             entity.setAuthor(authorModel);
             session.persist(entity);
 

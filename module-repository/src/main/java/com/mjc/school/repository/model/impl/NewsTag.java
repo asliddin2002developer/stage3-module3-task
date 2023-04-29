@@ -1,6 +1,6 @@
 package com.mjc.school.repository.model.impl;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 
 @Entity
