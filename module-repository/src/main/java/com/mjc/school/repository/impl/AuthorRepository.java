@@ -3,6 +3,9 @@ package com.mjc.school.repository.impl;
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.exception.NotFoundException;
 import com.mjc.school.repository.model.impl.NewsModel;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -12,88 +15,66 @@ import lombok.*;
 import java.util.List;
 
 import com.mjc.school.repository.model.impl.AuthorModel;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Getter
 @Setter
 @Repository
 public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
-    private final SessionFactory sessionFactory;
-    @Autowired
-    public AuthorRepository(SessionFactory sessionFactory){
-        this.sessionFactory = sessionFactory;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
+
 
     @Override
     public List<AuthorModel> readAll() {
-        try(Session session = sessionFactory.openSession()){
-            return (List<AuthorModel>) session.createQuery("FROM AuthorModel").getResultList();
-        }
+        return (List<AuthorModel>) entityManager.createQuery("FROM AuthorModel").getResultList();
+
     }
 
     @Override
     public AuthorModel readById(Long id) {
-        try (Session session = sessionFactory.openSession()){
-            return session.get(AuthorModel.class, id);
-        }
-        catch(NotFoundException e){
-            throw e;
-        }
+            var res = entityManager.find(AuthorModel.class, id);
+            return res;
     }
 
     @Override
     public AuthorModel create(AuthorModel entity) {
         AuthorModel authorModel = new AuthorModel(entity.getName());
-        try(Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.persist(authorModel);
-            session.getTransaction().commit();
-            return authorModel;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(authorModel);
+        entityManager.getTransaction().commit();
         return authorModel;
     }
 
     @Override
     public AuthorModel update(AuthorModel entity) {
-        try (Session session  = sessionFactory.openSession()){
-            session.beginTransaction();
-            AuthorModel authorModel = session.get(AuthorModel.class, entity.getId());
+            entityManager.getTransaction().begin();
+            AuthorModel authorModel = entityManager.find(AuthorModel.class, entity.getId());
             authorModel.setName(entity.getName());
-            session.persist(authorModel);
-            session.getTransaction().commit();
+            entityManager.persist(authorModel);
+            entityManager.getTransaction().commit();
             return authorModel;
-        }catch (HibernateException e){
-            e.printStackTrace();
-        }
-        return entity;
+
     }
 
     @Override
     public boolean deleteById(Long id) {
-        try(Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            Query<NewsModel> query = session.createQuery("DELETE FROM NewsModel n " +
+            entityManager.getTransaction().begin();
+            var query = entityManager.createQuery("DELETE FROM NewsModel n " +
                                                                             "WHERE n.author.id = :authorId");
             query.setParameter("authorId", id);
             query.executeUpdate();
-            AuthorModel authorModel = session.get(AuthorModel.class, id);
-            session.remove(authorModel);
-            session.getTransaction().commit();
+            AuthorModel authorModel = entityManager.find(AuthorModel.class, id);
+            entityManager.remove(authorModel);
+            entityManager.getTransaction().commit();
             return true;
-        }
     }
 
     @Override
     public boolean existById(Long id) {
-        try (Session session = sessionFactory.openSession()){
-            session.get(AuthorModel.class, id);
+        try {
+            entityManager.find(AuthorModel.class, id);
             return true;
         }
         catch(NotFoundException e){
@@ -105,8 +86,8 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
 
     @Override
     public AuthorModel findById(Long id) {
-        try (Session session = sessionFactory.openSession()){
-            return session.get(AuthorModel.class, id);
+        try {
+            return entityManager.find(AuthorModel.class, id);
         }catch (Exception e) {
             throw new NotFoundException("Author with given id NOT FOUND");
         }
@@ -114,14 +95,17 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
 
     @Override
     public AuthorModel getAuthorByNewsId(Long id) {
-        try(Session session = sessionFactory.openSession()){
-            CriteriaBuilder builder = session.getCriteriaBuilder();
+        try{
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
             CriteriaQuery<AuthorModel> query = builder.createQuery(AuthorModel.class);
             Root<NewsModel> root = query.from(NewsModel.class);
             Join<NewsModel, AuthorModel> join = root.join("author");
             query.select(join).where(builder.equal(root.get("id"), id));
-            return session.createQuery(query).getSingleResult();
+            return entityManager.createQuery(query).getSingleResult();
+        }catch (Exception e){
+            e.printStackTrace();
         }
+        throw new NotFoundException("Author with given id NOT FOUND");
     }
 }
 

@@ -8,7 +8,6 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import static com.mjc.school.repository.utils.Constants.*;
 
 @AnalyzeClasses(importOptions = ImportOption.DoNotIncludeTests.class)

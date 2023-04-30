@@ -10,7 +10,6 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-
 public class AuthorModelTest {
 
     private static SessionFactory sessionFactory;

@@ -1,5 +1,7 @@
 dependencies {
     implementation project(':module-repository')
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    implementation 'au.com.dius:pact-jvm-provider-junit5-spring:4.0.10'
+    implementation 'au.com.dius:pact-jvm-provider-junit5-spring:4.0.10'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 }
