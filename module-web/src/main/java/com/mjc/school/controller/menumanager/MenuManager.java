@@ -3,7 +3,6 @@ package com.mjc.school.controller.menumanager;
 import com.mjc.school.controller.BaseController;
 import com.mjc.school.controller.command.CommandDispatcher;
 import com.mjc.school.repository.exception.NotFoundException;
-import com.mjc.school.repository.utils.NewsParams;
 import com.mjc.school.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -123,7 +122,7 @@ public class MenuManager {
                     commandParams.add( newsId );
                 }
                 case FIND_NEWS_BY_PARAMS -> {
-                    NewsParams newsParams = this.fillNewsParams();
+                    NewsParamsRequest newsParams = this.fillNewsParams();
                     commandParams.add( newsParams );
                 }
                 case EXIT -> System.exit(0);
@@ -153,7 +152,7 @@ public class MenuManager {
         return tagIdsLong;
     }
 
-    private NewsParams fillNewsParams() {
+    private NewsParamsRequest fillNewsParams() {
         String authorName = inputHandler.ask( ENTER_AUTHOR_NAME.getContent() );
         String title = inputHandler.ask( ENTER_NEWS_TITLE.getContent() );
         String content = inputHandler.ask( ENTER_NEWS_CONTENT.getContent() );
@@ -171,7 +170,7 @@ public class MenuManager {
         String tagNamesString = inputHandler.ask( ENTER_TAG_NAMES.getContent() );
         List<String> tagNames = List.of( tagNamesString.split(",") );
 
-        return new NewsParams( authorName, title, content, tagIdsLong, tagNames );
+        return new NewsParamsRequest( authorName, title, content, tagIdsLong, tagNames );
     }
 
     public BaseController<?, ?, ?> getRelevantController( String choice ){

@@ -4,11 +4,12 @@ import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.exception.NotFoundException;
 import com.mjc.school.repository.model.impl.NewsModel;
 import com.mjc.school.repository.model.impl.TagModel;
-import com.mjc.school.repository.utils.NewsParams;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.NewsDtoRequest;
 import com.mjc.school.service.dto.NewsDtoResponse;
+import com.mjc.school.service.dto.NewsParamsRequest;
 import com.mjc.school.service.mapper.NewsMapper;
+import com.mjc.school.service.mapper.NewsParamsMapper;
 import com.mjc.school.service.validation.impl.NewsErrorValidator;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
     private final BaseRepository<TagModel, Long> tagRepository;
     private final NewsErrorValidator ERROR_VALIDATOR;
     private final NewsMapper mapper;
+    private final NewsParamsMapper newsParamsMapper;
 
     @Autowired
     public NewsService(BaseRepository<NewsModel, Long> repository,
@@ -34,6 +36,7 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
         this.repository = repository;
         this.tagRepository = tagRepository;
         this.ERROR_VALIDATOR = ERROR_VALIDATOR;
+        this.newsParamsMapper = Mappers.getMapper(NewsParamsMapper.class);
         this.mapper = Mappers.getMapper(NewsMapper.class);
     }
 
@@ -105,8 +108,8 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
     }
 
     @Override
-    public List<NewsDtoResponse> getNewsByParams(NewsParams params) {
-        List<NewsModel> newsModels = repository.getNewsByParams(params);
+    public List<NewsDtoResponse> getNewsByParams(NewsParamsRequest params) {
+        List<NewsModel> newsModels = repository.getNewsByParams(newsParamsMapper.dtoToModel(params));
         return newsModels.stream()
                 .map(mapper::modelToDto)
                 .collect(Collectors.toList());

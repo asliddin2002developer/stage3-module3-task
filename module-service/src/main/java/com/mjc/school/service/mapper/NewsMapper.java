@@ -7,12 +7,10 @@ import com.mjc.school.service.dto.NewsDtoResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Mapper
-@Component
 public interface NewsMapper {
 
 

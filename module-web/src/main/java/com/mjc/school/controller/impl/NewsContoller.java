@@ -1,10 +1,10 @@
 package com.mjc.school.controller.impl;
 
 import com.mjc.school.controller.BaseController;
-import com.mjc.school.repository.utils.NewsParams;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.NewsDtoRequest;
 import com.mjc.school.service.dto.NewsDtoResponse;
+import com.mjc.school.service.dto.NewsParamsRequest;
 import com.mjc.school.service.view.View;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,8 +52,8 @@ public class NewsContoller implements BaseController<NewsDtoRequest, NewsDtoResp
         return model.deleteById(id);
     }
 
-    public List<NewsDtoResponse> getNewsByParams(NewsParams params){
-        List<NewsDtoResponse> newsDtoResponses = model.getNewsByParams(params);
+    public List<NewsDtoResponse> getNewsByParams(NewsParamsRequest newsParamsRequest){
+        List<NewsDtoResponse> newsDtoResponses = model.getNewsByParams(newsParamsRequest);
         view.displayAll(newsDtoResponses);
         return newsDtoResponses;
     }
