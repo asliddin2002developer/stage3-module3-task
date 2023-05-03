@@ -7,12 +7,13 @@ import com.mjc.school.repository.model.impl.TagModel;
 import com.mjc.school.repository.utils.NewsParams;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BaseRepository<T extends BaseEntity<K>, K> {
 
     List<T> readAll();
 
-    T readById(K id);
+    Optional<T> readById(K id);
 
     T create(T entity);
 

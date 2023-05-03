@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -37,8 +38,8 @@ public class TagRepository implements BaseRepository<TagModel, Long> {
     }
 
     @Override
-    public TagModel readById(Long id) {
-            return entityManager.find(TagModel.class, id);
+    public Optional<TagModel> readById(Long id) {
+            return Optional.ofNullable(entityManager.find(TagModel.class, id));
     }
 
     @Override
@@ -51,41 +52,41 @@ public class TagRepository implements BaseRepository<TagModel, Long> {
 
     @Override
     public TagModel update(TagModel entity) {
-            entityManager.getTransaction().begin();
-            Query query = entityManager.createQuery("UPDATE TagModel t SET t.name = :tagName WHERE t.id = :tagId")
-                    .setParameter("tagName", entity.getName()).setParameter("tagId", entity.getId());
-            query.executeUpdate();
-            entityManager.getTransaction().commit();
-            return entity;
+        entityManager.getTransaction().begin();
+        Query query = entityManager.createQuery("UPDATE TagModel t SET t.name = :tagName WHERE t.id = :tagId")
+                .setParameter("tagName", entity.getName()).setParameter("tagId", entity.getId());
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
+        return entity;
     }
 
     @Override
     public boolean deleteById(Long id) {
-            entityManager.getTransaction().begin();
-            TagModel tag = entityManager.find(TagModel.class, id);
-            entityManager.remove(tag);
-            entityManager.getTransaction().commit();
-            return true;
-    }
+        entityManager.getTransaction().begin();
+        TagModel tag = entityManager.find(TagModel.class, id);
+        entityManager.remove(tag);
+        entityManager.getTransaction().commit();
+        return true;
+}
 
     @Override
     public boolean existById(Long id) {
-            entityManager.find(TagModel.class, id);
-            return true;
+        entityManager.find(TagModel.class, id);
+        return true;
     }
 
     @Override
     public TagModel findById(Long id) {
-            return entityManager.find(TagModel.class, id);
+        return entityManager.find(TagModel.class, id);
     }
 
     @Override
     public List<TagModel> getTagsByNewsId(Long id) {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<TagModel> query = builder.createQuery(TagModel.class);
-            Root<NewsModel> root = query.from(NewsModel.class);
-            Join<NewsModel, TagModel> join = root.join("tags");
-            query.select(join).where(builder.equal(root.get("id"), id));
-            return entityManager.createQuery(query).getResultList();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<TagModel> query = builder.createQuery(TagModel.class);
+        Root<NewsModel> root = query.from(NewsModel.class);
+        Join<NewsModel, TagModel> join = root.join("tags");
+        query.select(join).where(builder.equal(root.get("id"), id));
+        return entityManager.createQuery(query).getResultList();
     }
 }

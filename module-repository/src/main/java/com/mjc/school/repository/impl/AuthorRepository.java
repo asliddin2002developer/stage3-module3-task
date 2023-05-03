@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -44,8 +45,8 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
     }
 
     @Override
-    public AuthorModel readById(Long id) {
-        return entityManager.find(AuthorModel.class, id);
+    public Optional<AuthorModel> readById(Long id) {
+        return Optional.ofNullable(entityManager.find(AuthorModel.class, id));
     }
 
     @Override
