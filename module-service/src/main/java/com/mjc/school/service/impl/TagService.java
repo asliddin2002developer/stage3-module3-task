@@ -39,7 +39,13 @@ public class TagService implements BaseService<TagDtoRequest, TagDtoResponse, Lo
 
     @Override
     public TagDtoResponse readById(Long id) {
-        return mapper.modelToDto(repository.readById(id));
+        return repository
+                .readById(id)
+                .map(mapper::modelToDto)
+                .orElseThrow(
+                        () -> new NotFoundException("Tag Not Found")
+                );
+
     }
 
     @Override

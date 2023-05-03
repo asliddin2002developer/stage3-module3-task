@@ -1,6 +1,7 @@
 package com.mjc.school.service.impl;
 
 import com.mjc.school.repository.BaseRepository;
+import com.mjc.school.repository.exception.NotFoundException;
 import com.mjc.school.repository.model.impl.NewsModel;
 import com.mjc.school.repository.model.impl.TagModel;
 import com.mjc.school.repository.utils.NewsParams;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,16 +23,16 @@ import java.util.stream.Collectors;
 public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse, Long> {
 
     private final BaseRepository<NewsModel, Long> repository;
-    private final BaseRepository<TagModel, Long> tagRepo;
+    private final BaseRepository<TagModel, Long> tagRepository;
     private final NewsErrorValidator ERROR_VALIDATOR;
     private final NewsMapper mapper;
 
     @Autowired
     public NewsService(BaseRepository<NewsModel, Long> repository,
-                       BaseRepository<TagModel, Long> tagRepo,
+                       BaseRepository<TagModel, Long> tagRepository,
                        NewsErrorValidator ERROR_VALIDATOR){
         this.repository = repository;
-        this.tagRepo = tagRepo;
+        this.tagRepository = tagRepository;
         this.ERROR_VALIDATOR = ERROR_VALIDATOR;
         this.mapper = Mappers.getMapper(NewsMapper.class);
     }
@@ -46,8 +48,12 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
 
     @Override
     public NewsDtoResponse readById(Long id) {
-        NewsModel newsModel = repository.findById(id);
-        return mapper.modelToDto(newsModel);
+        return repository
+                .readById(id)
+                .map(mapper::modelToDto)
+                .orElseThrow(
+                        () -> new NotFoundException("News NOT FOUND")
+                );
     }
 
     @Override
@@ -57,9 +63,10 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
             Set<Long> tagIds = createRequest.getTagIds();
             NewsModel news = mapper.dtoToModel(createRequest);
             for ( Long id : tagIds ){
-                TagModel tag = tagRepo.readById(id);
+                Optional<TagModel> tag = tagRepository.readById(id);
+                TagModel tagModel = mapper.optionalToModel(tag);
                 if (tag != null ){
-                    news.addTags( tag );
+                    news.addTags( tagModel );
                 }
             }
             repository.create(news);
@@ -75,10 +82,12 @@ public class NewsService implements BaseService<NewsDtoRequest, NewsDtoResponse,
             NewsModel news = mapper.dtoToModel(updateRequest);
             System.out.println(tagIds);
             for ( Long id : tagIds ){
-                TagModel tag = tagRepo.readById(id);
-                System.out.println(tag);
-                if (tag != null ){
-                    news.addTags( tag );
+                Optional<TagModel> tag = tagRepository.readById(id);
+                TagModel tagModel = mapper.optionalToModel(tag);
+
+                System.out.println(tagModel);
+                if (tagModel != null ){
+                    news.addTags( tagModel );
                 }
             }
             news = repository.update(news);

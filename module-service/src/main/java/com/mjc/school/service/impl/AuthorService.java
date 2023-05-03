@@ -39,7 +39,13 @@ public class AuthorService implements BaseService<AuthorDtoRequest, AuthorDtoRes
 
     @Override
     public AuthorDtoResponse readById(Long id) {
-        return mapper.modelToDto(repository.readById(id));
+        return repository
+                .readById(id)
+                .map(mapper::modelToDto)
+                .orElseThrow(
+                        () -> new NotFoundException("Author NOT FOUND")
+                );
+
     }
 
     @Override

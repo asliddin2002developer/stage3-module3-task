@@ -1,12 +1,15 @@
 package com.mjc.school.service.mapper;
 
 import com.mjc.school.repository.model.impl.NewsModel;
+import com.mjc.school.repository.model.impl.TagModel;
 import com.mjc.school.service.dto.NewsDtoRequest;
 import com.mjc.school.service.dto.NewsDtoResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Mapper
 @Component
@@ -26,5 +29,13 @@ public interface NewsMapper {
             @Mapping(target = "tags", ignore = true)
     })
     NewsModel dtoToModel(NewsDtoRequest request);
+
+
+    @Mappings({
+            @Mapping(target = "id", expression = "java(tagModelOptional.isPresent() ? tagModelOptional.get().getId() : null)"),
+            @Mapping(target = "name", expression = "java(tagModelOptional.isPresent() ? tagModelOptional.get().getName() : null)"),
+            @Mapping(target = "news",expression = "java(tagModelOptional.isPresent() ? tagModelOptional.get().getNews() : null)")
+    })
+    TagModel optionalToModel(Optional<TagModel> tagModelOptional);
 
 }
