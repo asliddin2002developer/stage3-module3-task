@@ -1,10 +1,10 @@
 package com.mjc.school.repository.model.impl;
 
 import com.mjc.school.repository.model.BaseEntity;
-import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,14 +12,14 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "Tag")
+@Table(name = "TAG")
 public class TagModel implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)

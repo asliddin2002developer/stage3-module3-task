@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
-@Component("inputHandler")
+@Component
 public class InputHandler {
     private final Scanner scanner;
 

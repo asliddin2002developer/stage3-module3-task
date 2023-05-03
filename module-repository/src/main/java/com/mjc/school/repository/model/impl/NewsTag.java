@@ -6,18 +6,18 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "NewsTag")
+@Table(name = "NEWSTAG")
 public class NewsTag implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "news_id")
+    @JoinColumn(name = "news_id", nullable = false)
     private NewsModel news;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "tag_id")
+    @JoinColumn(name = "tag_id", nullable = false)
     private TagModel tagModel;
 
 

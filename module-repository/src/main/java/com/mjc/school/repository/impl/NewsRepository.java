@@ -4,18 +4,17 @@ package com.mjc.school.repository.impl;
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.impl.AuthorModel;
 import com.mjc.school.repository.model.impl.NewsModel;
-
 import com.mjc.school.repository.model.impl.TagModel;
 import com.mjc.school.repository.utils.NewsParams;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.criteria.*;
-import lombok.*;
-
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 
@@ -23,9 +22,15 @@ import java.util.List;
 @Setter
 @Repository
 public class NewsRepository implements BaseRepository<NewsModel, Long> {
-
-    @PersistenceContext
+    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+
+    @Autowired
+    public NewsRepository(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+        this.entityManager = this.entityManagerFactory.createEntityManager();
+    }
+
 
 
     @Override
@@ -35,7 +40,7 @@ public class NewsRepository implements BaseRepository<NewsModel, Long> {
             // return entityManager.createQuery("SELECT DISTINCT  n FROM NewsModel n " +
             //                                                   "JOIN FETCH n.tags t " +
             //                                                   "JOIN FETCH n.author a ", NewsModel.class).getResultList();
-            return entityManager.createQuery("FROM NewsModel").getResultList();
+            return entityManager.createNativeQuery("select * from news", NewsModel.class).getResultList();
 
     }
 

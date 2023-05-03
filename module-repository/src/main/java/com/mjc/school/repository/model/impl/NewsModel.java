@@ -1,12 +1,13 @@
 package com.mjc.school.repository.model.impl;
 
 import com.mjc.school.repository.model.BaseEntity;
-import javax.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,28 +17,28 @@ import java.util.Set;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "News")
+@Table(name = "NEWS")
 public class NewsModel implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "createDate")
+    @Column(name = "createDate", nullable = false)
     @CreatedDate
     private LocalDateTime createDate;
 
-    @Column(name = "lastUpdateDate")
+    @Column(name = "lastUpdateDate", nullable = false)
     @LastModifiedDate
     private LocalDateTime lastUpdateDate;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "author")
+    @JoinColumn(name = "author", nullable = false)
     private AuthorModel author;
 
     @ManyToMany(fetch = FetchType.EAGER)

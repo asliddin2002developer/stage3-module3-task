@@ -1,17 +1,15 @@
 package com.mjc.school.service.impl;
 
 import com.mjc.school.repository.BaseRepository;
+import com.mjc.school.repository.model.impl.NewsModel;
 import com.mjc.school.repository.model.impl.TagModel;
 import com.mjc.school.repository.utils.NewsParams;
-import com.mjc.school.repository.model.impl.NewsModel;
 import com.mjc.school.service.BaseService;
 import com.mjc.school.service.dto.NewsDtoRequest;
 import com.mjc.school.service.dto.NewsDtoResponse;
 import com.mjc.school.service.mapper.NewsMapper;
 import com.mjc.school.service.validation.impl.NewsErrorValidator;
-
 import org.mapstruct.factory.Mappers;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

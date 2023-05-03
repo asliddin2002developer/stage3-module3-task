@@ -1,6 +1,4 @@
 dependencies {
     implementation project(':module-service')
     implementation project(path: ':module-repository')
-    implementation 'au.com.dius:pact-jvm-provider-junit5-spring:4.0.10'
-    implementation 'au.com.dius:pact-jvm-provider-junit5-spring:4.0.10'
 }

@@ -1,14 +1,17 @@
 package com.mjc.school.controller.menumanager;
 
-import com.mjc.school.controller.command.CommandDispatcher;
 import com.mjc.school.controller.BaseController;
+import com.mjc.school.controller.command.CommandDispatcher;
 import com.mjc.school.repository.exception.NotFoundException;
 import com.mjc.school.repository.utils.NewsParams;
 import com.mjc.school.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.mjc.school.controller.menumanager.Menu.*;
 import static com.mjc.school.controller.menumanager.Utils.*;
@@ -52,9 +55,6 @@ public class MenuManager {
             String choice = inputHandler.ask("");
             List<Object> commandParams = new ArrayList<>();
             switch (choice) {
-                case READ_ALL_AUTHORS -> {}
-                case READ_ALL_NEWS -> {}
-                case READ_ALL_TAGS -> {}
                 case READ_AUTHOR_BY_ID -> {
                     authorId = inputHandler.isValidId( inputHandler.ask( ENTER_AUTHOR_ID.getContent() ) );
                     commandParams.add( authorId );

@@ -2,17 +2,18 @@ package com.mjc.school.repository.model.impl;
 
 
 import com.mjc.school.repository.model.BaseEntity;
-import javax.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "Author")
+@Table(name = "AUTHOR")
 @EntityListeners(AuditingEntityListener.class)
 public class AuthorModel implements BaseEntity<Long> {
 
@@ -20,14 +21,14 @@ public class AuthorModel implements BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "createDate")
+    @Column(name = "createDate", nullable = false)
     @CreatedDate
     private LocalDateTime createDate;
 
-    @Column(name = "lastUpdateDate")
+    @Column(name = "lastUpdateDate", nullable = false)
     @LastModifiedDate
     private LocalDateTime lastUpdateDate;
 

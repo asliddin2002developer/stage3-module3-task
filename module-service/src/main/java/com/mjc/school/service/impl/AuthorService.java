@@ -1,7 +1,6 @@
 package com.mjc.school.service.impl;
 
 import com.mjc.school.repository.BaseRepository;
-
 import com.mjc.school.repository.exception.NotFoundException;
 import com.mjc.school.repository.model.impl.AuthorModel;
 import com.mjc.school.service.BaseService;
@@ -10,7 +9,6 @@ import com.mjc.school.service.dto.AuthorDtoResponse;
 import com.mjc.school.service.mapper.AuthorMapper;
 import com.mjc.school.service.validation.Validator;
 import com.mjc.school.service.validation.impl.AuthorErrorValidator;
-
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

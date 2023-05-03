@@ -1,14 +1,16 @@
 package com.mjc.school.config;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.sql.DataSource;
 
 
-@SpringBootApplication
+@Configuration
 @EnableJpaAuditing
 @ComponentScan(basePackages = "com.mjc.school")
 public class ProjectConfig {
@@ -22,10 +24,17 @@ public class ProjectConfig {
         dataSource.setPassword("postgres");
         return dataSource;
     }
-    public static void main(String[] args) {
-        SpringApplication.run(ProjectConfig.class, args);
+
+
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
+        return Persistence.createEntityManagerFactory("NewsManagement");
     }
+
 }
+
+
+
 
 
 

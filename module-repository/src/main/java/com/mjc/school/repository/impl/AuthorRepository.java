@@ -2,73 +2,80 @@ package com.mjc.school.repository.impl;
 
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.exception.NotFoundException;
+import com.mjc.school.repository.model.impl.AuthorModel;
 import com.mjc.school.repository.model.impl.NewsModel;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import lombok.*;
-
 import java.util.List;
-
-import com.mjc.school.repository.model.impl.AuthorModel;
-import org.springframework.stereotype.Repository;
 
 @Getter
 @Setter
 @Repository
 public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
-    @PersistenceContext
+
+    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+
+    @Autowired
+    public AuthorRepository(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+        this.entityManager = this.entityManagerFactory.createEntityManager();
+    }
+
 
 
     @Override
     public List<AuthorModel> readAll() {
-        return (List<AuthorModel>) entityManager.createQuery("FROM AuthorModel").getResultList();
+        CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();
+        CriteriaQuery<AuthorModel> query = cb.createQuery(AuthorModel.class);
+        Root<AuthorModel> fromItem = query.from(AuthorModel.class);
+        query.select(fromItem);
+        return entityManager.createQuery(query).getResultList();
 
     }
 
     @Override
     public AuthorModel readById(Long id) {
-            var res = entityManager.find(AuthorModel.class, id);
-            return res;
+        return entityManager.find(AuthorModel.class, id);
     }
 
     @Override
     public AuthorModel create(AuthorModel entity) {
-        AuthorModel authorModel = new AuthorModel(entity.getName());
-
         entityManager.getTransaction().begin();
-        entityManager.persist(authorModel);
+        entityManager.persist(entity);
         entityManager.getTransaction().commit();
-        return authorModel;
+        return entity;
     }
 
     @Override
     public AuthorModel update(AuthorModel entity) {
-            entityManager.getTransaction().begin();
-            AuthorModel authorModel = entityManager.find(AuthorModel.class, entity.getId());
-            authorModel.setName(entity.getName());
-            entityManager.persist(authorModel);
-            entityManager.getTransaction().commit();
-            return authorModel;
+        entityManager.getTransaction().begin();
+        AuthorModel authorModel = entityManager.find(AuthorModel.class, entity.getId());
+        authorModel.setName(entity.getName());
+        entityManager.persist(authorModel);
+        entityManager.getTransaction().commit();
+        return authorModel;
 
     }
 
     @Override
     public boolean deleteById(Long id) {
-            entityManager.getTransaction().begin();
-            var query = entityManager.createQuery("DELETE FROM NewsModel n " +
-                                                                            "WHERE n.author.id = :authorId");
-            query.setParameter("authorId", id);
-            query.executeUpdate();
-            AuthorModel authorModel = entityManager.find(AuthorModel.class, id);
-            entityManager.remove(authorModel);
-            entityManager.getTransaction().commit();
-            return true;
+        entityManager.getTransaction().begin();
+        var query = entityManager.createQuery("DELETE FROM NewsModel n WHERE n.author.id = :authorId").setParameter("authorId", id);
+        query.executeUpdate();
+        AuthorModel authorModel = entityManager.find(AuthorModel.class, id);
+        entityManager.remove(authorModel);
+        entityManager.getTransaction().commit();
+        return true;
     }
 
     @Override
@@ -78,6 +85,7 @@ public class AuthorRepository implements BaseRepository<AuthorModel, Long> {
             return true;
         }
         catch(NotFoundException e){
+            entityManager.close();
             e.printStackTrace();
         }
         return false;

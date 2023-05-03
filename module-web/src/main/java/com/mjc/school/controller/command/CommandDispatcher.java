@@ -6,9 +6,11 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@Component("commandDispatcher")
+@Component
 public class CommandDispatcher {
     private final Map<String, String> commandMap = new HashMap<>();
 

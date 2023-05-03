@@ -1,12 +1,12 @@
 package com.mjc.school.controller.aspects;
 
+import com.mjc.school.controller.impl.NewsContoller;
 import com.mjc.school.repository.model.impl.AuthorModel;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.mjc.school.controller.impl.NewsContoller;
 
 @Component
 @Aspect

@@ -2,7 +2,7 @@ package com.mjc.school.controller.menumanager;
 
 import org.springframework.stereotype.Component;
 
-@Component("menu")
+@Component
 public class Menu {
     public static final String READ_ALL_AUTHORS = "1";
     public static final String READ_ALL_NEWS = "2";

@@ -24,8 +24,11 @@ subprojects {
         implementation "org.aspectj:aspectjweaver:$aspectjweaverVersion"
         implementation "org.postgresql:postgresql:$postgresVersion"
         implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootStarterDataJpaVersion"
+        implementation 'org.eclipse.persistence:eclipselink:2.7.9'
         implementation group: 'javax.persistence', name: 'javax.persistence-api', version: "$javaxVersion"
         implementation group: 'javax.xml.bind', name: 'jaxb-api', version: "$jaxbApiVersion"
+        implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.0.6'
+
 
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
 
@@ -34,6 +37,7 @@ subprojects {
         testImplementation "com.tngtech.archunit:archunit:$archUnitVersion"
         testImplementation "com.tngtech.archunit:archunit-junit5:$archUnitJunit5Version"
         testImplementation group: 'org.assertj', name: 'assertj-core', version: "$assertjVersion"
+        testImplementation "com.h2database:h2:$h2Version"
 
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"

@@ -3,17 +3,18 @@ package com.mjc.school.repository.impl;
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.impl.NewsModel;
 import com.mjc.school.repository.model.impl.TagModel;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Getter
@@ -21,13 +22,18 @@ import java.util.List;
 @Repository
 public class TagRepository implements BaseRepository<TagModel, Long> {
 
-    @PersistenceContext
+    private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
+    @Autowired
+    public TagRepository(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+        this.entityManager = this.entityManagerFactory.createEntityManager();
+    }
 
 
     @Override
     public List<TagModel> readAll() {
-            return entityManager.createQuery("FROM TagModel").getResultList();
+            return entityManager.createNativeQuery("select * from tag", TagModel.class).getResultList();
     }
 
     @Override
@@ -37,7 +43,6 @@ public class TagRepository implements BaseRepository<TagModel, Long> {
 
     @Override
     public TagModel create(TagModel entity) {
-        TagModel tag = new TagModel(entity.getName());
         entityManager.getTransaction().begin();
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
@@ -47,10 +52,11 @@ public class TagRepository implements BaseRepository<TagModel, Long> {
     @Override
     public TagModel update(TagModel entity) {
             entityManager.getTransaction().begin();
-            TagModel tag = entityManager.find(TagModel.class, entity.getId());
-            tag.setName(entity.getName());
+            Query query = entityManager.createQuery("UPDATE TagModel t SET t.name = :tagName WHERE t.id = :tagId")
+                    .setParameter("tagName", entity.getName()).setParameter("tagId", entity.getId());
+            query.executeUpdate();
             entityManager.getTransaction().commit();
-            return tag;
+            return entity;
     }
 
     @Override
