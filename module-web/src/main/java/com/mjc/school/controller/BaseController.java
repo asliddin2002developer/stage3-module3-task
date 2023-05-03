@@ -3,9 +3,9 @@ package com.mjc.school.controller;
 import com.mjc.school.controller.annotations.CommandBody;
 import com.mjc.school.controller.annotations.CommandHandler;
 import com.mjc.school.controller.annotations.CommandParam;
-import com.mjc.school.repository.utils.NewsParams;
 import com.mjc.school.service.dto.AuthorDtoResponse;
 import com.mjc.school.service.dto.NewsDtoResponse;
+import com.mjc.school.service.dto.NewsParamsRequest;
 import com.mjc.school.service.dto.TagDtoResponse;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public interface BaseController<T, R, K> {
         throw new UnsupportedOperationException("Method not implemented");
     }
     @CommandHandler
-    default List<NewsDtoResponse> getNewsByParams(@CommandBody NewsParams params) {
+    default List<NewsDtoResponse> getNewsByParams(@CommandBody NewsParamsRequest params) {
         // Default implementation that throws an UnsupportedOperationException
         throw new UnsupportedOperationException("Method not implemented");
     }
